@@ -5,31 +5,30 @@
  */
 function getDateFromJulianDay(julianDay: number) {
   julianDay += 0.5;
-  let [sInteger, sFraction] = julianDay.toString().split(".");
+  const [sInteger, sFraction] = julianDay.toString().split(".");
 
-  let integer = parseInt(sInteger);
-  let fraction = parseFloat("0." + sFraction);
+  const integer = parseInt(sInteger);
+  const fraction = parseFloat("0." + sFraction);
 
-  let a: number, b: number, c: number, d: number, e: number;
-
+  let a: number;
   if (integer < 2299161) {
     a = integer;
   } else {
-    let gamma = Math.trunc((integer - 1867216.25) / 36524.25);
+    const gamma = Math.trunc((integer - 1867216.25) / 36524.25);
     a = integer + 1 + gamma - Math.trunc(gamma / 4);
   }
 
-  b = a + 1524;
-  c = Math.trunc((b - 122.1) / 365.25);
-  d = Math.trunc(365.25 * c);
-  e = Math.trunc((b - d) / 30.6001);
+  const b = a + 1524;
+  const c = Math.trunc((b - 122.1) / 365.25);
+  const d = Math.trunc(365.25 * c);
+  const e = Math.trunc((b - d) / 30.6001);
 
-  let dayOfMonth = b - d - Math.trunc(30.6001 * e) + fraction;
-  let month = e < 14 ? e - 1 : e - 13;
+  const dayOfMonth = b - d - Math.trunc(30.6001 * e) + fraction;
+  const month = e < 14 ? e - 1 : e - 13;
 
-  let hour = (dayOfMonth % 1) * 24;
-  let minute = (hour % 1) * 60;
-  let [second, millisecond] = (Math.round((minute % 1) * 60 * 10) / 10)
+  const hour = (dayOfMonth % 1) * 24;
+  const minute = (hour % 1) * 60;
+  const [second, millisecond] = (Math.round((minute % 1) * 60 * 10) / 10)
     .toString()
     .split(".");
 
