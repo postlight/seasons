@@ -56,6 +56,26 @@ test("getSeasonStart - December solstice", () => {
   expect(resultUnder1000).toMatchObject(expectedUnder1000);
 });
 
+test("getSeasonStart - round to next nearest month", () => {
+  // Verify starting months that don't have a solstice/equinox
+  const marchEquinox = new Date(Date.UTC(2023, 2, 20, 21, 25, 53, 500));
+  const juneSolstice = new Date(Date.UTC(2023, 5, 21, 14, 58, 50, 0));
+  const septemberEquinox = new Date(Date.UTC(2023, 8, 23, 6, 51, 15, 800));
+  const decemberSolstice = new Date(Date.UTC(2023, 11, 22, 3, 28, 45, 400));
+
+  expect(seasons.getSeasonStart(0, 2023)).toMatchObject(marchEquinox);
+  expect(seasons.getSeasonStart(1, 2023)).toMatchObject(marchEquinox);
+
+  expect(seasons.getSeasonStart(3, 2023)).toMatchObject(juneSolstice);
+  expect(seasons.getSeasonStart(4, 2023)).toMatchObject(juneSolstice);
+
+  expect(seasons.getSeasonStart(6, 2023)).toMatchObject(septemberEquinox);
+  expect(seasons.getSeasonStart(7, 2023)).toMatchObject(septemberEquinox);
+
+  expect(seasons.getSeasonStart(9, 2023)).toMatchObject(decemberSolstice);
+  expect(seasons.getSeasonStart(10, 2023)).toMatchObject(decemberSolstice);
+});
+
 test("getCurrentSeason - March equinox", () => {
   // Northern hemisphere
   expect(seasons.getCurrentSeason(new Date(2023, 2, 10))).toBe("winter");

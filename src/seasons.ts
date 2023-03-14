@@ -1,12 +1,9 @@
 import conversion from "./conversions";
 
-/*
+/**
  * Gets the start date and time for the Astronomical season's start
- *  monthIndex options:
- *    - 2, March equinox, start of spring/fall [northern/southern hemisphere]
- *    - 5, June solstice, start summer/winter
- *    - 8, September equinox, start of fall/spring
- *    - 11, December solstice, start of winter/summer
+ * The next nearest solstice/equinox is returned if the month index doesn't have one
+ * The month index begins at 0, so January=0, February=1, and so on
  *
  * Which season each equinox or solstice represents the start of depends on your hemisphere
  *
@@ -34,28 +31,28 @@ export function getSeasonStartJulianDay(monthIndex: number, year: number) {
 
 function getJDE0(monthIndex: number, year: number) {
   // Astronomical Algorithms, p.178, Table 27.A
-  const seasonConstantsA = {
-    2: [1721139.29189, 365242.1374, 0.06134, 0.00111, -0.00071],
-    5: [1721233.25401, 365241.72562, -0.05323, 0.00907, 0.00025],
-    8: [1721325.70455, 365242.49558, -0.11677, -0.00297, 0.00074],
-    11: [1721414.39987, 365242.88257, -0.00769, -0.00933, -0.00006],
-  };
+  const seasonConstantsA = [
+    [1721139.29189, 365242.1374, 0.06134, 0.00111, -0.00071],
+    [1721233.25401, 365241.72562, -0.05323, 0.00907, 0.00025],
+    [1721325.70455, 365242.49558, -0.11677, -0.00297, 0.00074],
+    [1721414.39987, 365242.88257, -0.00769, -0.00933, -0.00006],
+  ];
 
   // Astronomical Algorithms, p.178, Table 27.B
-  const seasonConstantsB = {
-    2: [2451623.80984, 365242.37404, 0.05169, -0.00411, -0.00057],
-    5: [2451716.56767, 365241.62603, 0.00325, 0.00888, -0.0003],
-    8: [2451810.21715, 365242.01767, -0.11575, 0.00337, 0.00078],
-    11: [2451900.05952, 365242.74049, -0.06223, -0.00823, 0.00032],
-  };
+  const seasonConstantsB = [
+    [2451623.80984, 365242.37404, 0.05169, -0.00411, -0.00057],
+    [2451716.56767, 365241.62603, 0.00325, 0.00888, -0.0003],
+    [2451810.21715, 365242.01767, -0.11575, 0.00337, 0.00078],
+    [2451900.05952, 365242.74049, -0.06223, -0.00823, 0.00032],
+  ];
 
   let y: number, constants: number[];
   if (year >= 1000) {
     y = (year - 2000) / 1000;
-    constants = seasonConstantsB[monthIndex];
+    constants = seasonConstantsB[Math.floor(monthIndex / 3)];
   } else {
     y = year / 1000;
-    constants = seasonConstantsA[monthIndex];
+    constants = seasonConstantsA[Math.floor(monthIndex / 3)];
   }
 
   return (
@@ -107,7 +104,10 @@ function calculateS(t: number) {
  * Gets current season of date passed in
  * Converts season start date to user's local timezone to check for correct date
  */
-function getCurrentSeason(date: Date, isNorthernHemisphere: boolean = true) {
+export function getCurrentSeason(
+  date: Date,
+  isNorthernHemisphere: boolean = true
+) {
   const northernHemisphereSeasons = ["winter", "spring", "summer", "fall"];
   const southernHemisphereSeasons = ["summer", "fall", "winter", "spring"];
 
