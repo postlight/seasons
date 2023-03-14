@@ -34,7 +34,7 @@ export function getSeasonStartJulianDay(monthIndex: number, year: number) {
 
 function getJDE0(monthIndex: number, year: number) {
   // Astronomical Algorithms, p.178, Table 27.A
-  let seasonConstantsA = {
+  const seasonConstantsA = {
     2: [1721139.29189, 365242.1374, 0.06134, 0.00111, -0.00071],
     5: [1721233.25401, 365241.72562, -0.05323, 0.00907, 0.00025],
     8: [1721325.70455, 365242.49558, -0.11677, -0.00297, 0.00074],
@@ -42,7 +42,7 @@ function getJDE0(monthIndex: number, year: number) {
   };
 
   // Astronomical Algorithms, p.178, Table 27.B
-  let seasonConstantsB = {
+  const seasonConstantsB = {
     2: [2451623.80984, 365242.37404, 0.05169, -0.00411, -0.00057],
     5: [2451716.56767, 365241.62603, 0.00325, 0.00888, -0.0003],
     8: [2451810.21715, 365242.01767, -0.11575, 0.00337, 0.00078],
@@ -103,4 +103,40 @@ function calculateS(t: number) {
   );
 }
 
-export default { getSeasonStart };
+/*
+ * Gets current season of date passed in
+ * Converts season start date to user's local timezone to check for correct date
+ */
+function getCurrentSeason(date: Date, isNorthernHemisphere: boolean = true) {
+  const northernHemisphereSeasons = ["winter", "spring", "summer", "fall"];
+  const southernHemisphereSeasons = ["summer", "fall", "winter", "spring"];
+
+  const seasons = isNorthernHemisphere
+    ? northernHemisphereSeasons
+    : southernHemisphereSeasons;
+
+  let seasonIndex = Math.floor(date.getMonth() / 3);
+
+  // Check for season start only in the second half of months with a solstice/equinox
+  if ((date.getMonth() + 1) % 3 === 0 && date.getDate() > 14) {
+    const utcSeasonStart = getSeasonStart(date.getMonth(), date.getFullYear());
+
+    // Account for timezone in season start - can change date, ex: December solstice 2023
+    const localStart = new Date(
+      utcSeasonStart.getFullYear(),
+      utcSeasonStart.getMonth(),
+      utcSeasonStart.getDate()
+    );
+
+    if (localStart.getDate() <= date.getDate()) {
+      seasonIndex += 1;
+      if (seasonIndex > 3) {
+        seasonIndex = seasonIndex - 4;
+      }
+    }
+  }
+
+  return seasons[seasonIndex];
+}
+
+export default { getSeasonStart, getCurrentSeason };
