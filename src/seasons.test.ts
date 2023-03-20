@@ -161,3 +161,14 @@ test("getCurrentSeason - other months", () => {
   expect(seasons.getCurrentSeason(new Date(2023, 9, 1), false)).toBe("spring");
   expect(seasons.getCurrentSeason(new Date(2023, 10, 2), false)).toBe("spring");
 });
+
+test("getSeasons in 2023", () => {
+  const expectedSeasons2023 = [
+    new Date(Date.UTC(2023, 2, 20, 21, 25, 53, 500)),
+    new Date(Date.UTC(2023, 5, 21, 14, 58, 50, 0)),
+    new Date(Date.UTC(2023, 8, 23, 6, 51, 15, 800)),
+    new Date(Date.UTC(2023, 11, 22, 3, 28, 45, 400)),
+  ];
+
+  expect(seasons.getSeasons(2023)).toMatchObject(expectedSeasons2023);
+});

@@ -10,6 +10,7 @@ Astronomical seasons are based around natural rotation of the Earth around the s
 - Get the date and time of the solstice/equinox in a month, which marks the beginning of a season
   - As a UTC datetime
   - As a Julian Day
+- Get a list of all the solstices and equinoxes in a given year, which mark the beginning of a new season
 
 ## Installation
 
@@ -38,7 +39,7 @@ console.log(currentSeason);
 
 `getCurrentSeason(date, isNorthernHemisphere?)`
 
-Gets the current season for the date. `isNorthernHemisphere` is an optional argument, and defaults to true. The season is determined on the local timezone, since the UTC date must be converted to a timezone since some solstices and equinoxes are different dates (ex: December 2023).
+Gets the name of the current season for the date. Since season names are different in each hemisphere, "isNorthernHemisphere" is an optional argument and defaults to true. The season is determined on the local timezone, since the UTC date must be converted to a timezone since some solstices and equinoxes are different dates (ex: December 2023).
 
 This function returns "spring", "summer", "winter", or "fall"
 
@@ -58,13 +59,22 @@ seasons.getSeasonStart(11, 2023).toLocaleString("en-US", {
 ```
 
 ```javascript
-// Convert date to local
+const utcSeasonStart = seasons.getSeasonStart(11, 2023); // result: 2023-12-22T03:28:45.400Z
+
+// Convert UTC season start date to local season start date
 const localStart = new Date(
   utcSeasonStart.getFullYear(),
   utcSeasonStart.getMonth(),
   utcSeasonStart.getDate()
 );
+
+// If local is EST timezone, should output: 2023-12-21T05:00:00.000Z
 ```
+
+`getSeasons(year)`
+Returns a list of all the seasons in a year as UTC dates. These dates will need to be converted to the local datetime to get the correct season start date.
+
+Result format: [march-equinox, june-solstice, september-equinox, december-solstice]
 
 `getSeasonStartJulianDay(monthIndex, year)`
 

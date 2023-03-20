@@ -139,4 +139,15 @@ export function getCurrentSeason(
   return seasons[seasonIndex];
 }
 
-export default { getSeasonStart, getCurrentSeason };
+/**
+ * Gets a list of all the seasons in a given year
+ * Returns each season as a UTC date in order March to December
+ *   [march-equinox, june-solstice, september-equinox, december-solstice]
+ */
+export function getSeasons(year: number): Date[] {
+  return [2, 5, 8, 11].map((monthIndex) => {
+    return getSeasonStart(monthIndex, year);
+  });
+}
+
+export default { getSeasonStart, getCurrentSeason, getSeasons };
