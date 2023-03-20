@@ -3,7 +3,7 @@
  *
  * Calculation from Astronomical Algorithms, p.63
  */
-function getDateFromJulianDay(julianDay: number) {
+function getDateFromJulianDay(julianDay: number): Date {
   julianDay += 0.5;
   const [sInteger, sFraction] = julianDay.toString().split(".");
 

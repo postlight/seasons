@@ -9,12 +9,15 @@ import conversion from "./conversions";
  *
  * Below calculations from Astronomical Algorithms, p.177-182
  */
-export function getSeasonStart(monthIndex: number, year: number) {
+export function getSeasonStart(monthIndex: number, year: number): Date {
   const jde = getSeasonStartJulianDay(monthIndex, year);
   return conversion.getDateFromJulianDay(jde);
 }
 
-export function getSeasonStartJulianDay(monthIndex: number, year: number) {
+export function getSeasonStartJulianDay(
+  monthIndex: number,
+  year: number
+): number {
   const jde0 = getJDE0(monthIndex, year);
 
   const t = (jde0 - 2451545) / 36525;
@@ -29,7 +32,7 @@ export function getSeasonStartJulianDay(monthIndex: number, year: number) {
   return Math.round(jde * 100000) / 100000;
 }
 
-function getJDE0(monthIndex: number, year: number) {
+function getJDE0(monthIndex: number, year: number): number {
   // Astronomical Algorithms, p.178, Table 27.A
   const seasonConstantsA = [
     [1721139.29189, 365242.1374, 0.06134, 0.00111, -0.00071],
@@ -107,7 +110,7 @@ function calculateS(t: number) {
 export function getCurrentSeason(
   date: Date,
   isNorthernHemisphere: boolean = true
-) {
+): string {
   const northernHemisphereSeasons = ["winter", "spring", "summer", "fall"];
   const southernHemisphereSeasons = ["summer", "fall", "winter", "spring"];
 
